@@ -2,9 +2,18 @@
 const game = document.getElementById('game');
 const scoreDisplay = document.getElementById('score');
 const bin = document.getElementById('bin');
-const jerrycan = document.getElementById('jerrycan');
 const livesDisplay = document.getElementById('lives');
 
+// Get the jerrycan image element by its ID
+const jerrycan = document.getElementById('jerrycan');
+
+// If jerrycan exists, set its image to water-can-transparent.png
+// Make sure your HTML uses <img id="jerrycan"> for this to work
+if (jerrycan) {
+  jerrycan.src = '/img/water-can-transparent.png'; // Path to your jerry can image
+}
+
+// Initialize game state
 let score = 0;   // Player's score
 let binModes = ['recycle', 'waste'];
 let binModeIndex = 0;
@@ -242,8 +251,17 @@ function spawnItem() {
   });
 }
 
+// Store the interval ID so we can stop it later
+let spawnInterval = setInterval(spawnItem, 1000);
+
 // Show game over screen and final score
 function showGameOver() {
+  // Stop spawning new items
+  clearInterval(spawnInterval);
+  // Stop all falling item intervals
+  fallIntervals.forEach(clearInterval);
+  fallIntervals = [];
+
   // Clear game area
   game.innerHTML = '';
 
@@ -269,6 +287,3 @@ function showGameOver() {
 
   document.body.appendChild(overlay);
 }
-
-// Spawn items every second
-setInterval(spawnItem, 1000);
