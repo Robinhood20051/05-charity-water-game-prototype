@@ -241,3 +241,12 @@ html, body {
   color: #ffc600;
   border: 2px solid #ffc600;
 }
+
+/* Add a style for the logo at the top of the game */
+.cw-logo {
+  display: block;
+  margin: 24px auto 8px auto;
+  max-width: 220px;
+  width: 60vw;
+  height: auto;
+}
