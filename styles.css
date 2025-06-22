@@ -136,6 +136,17 @@ html, body {
   border-color: #333333 !important;
 }
 
+#bin.bin-recycle {
+  background-color: #ffc600 !important;
+  color: #222 !important;
+  border-color: #ffc600 !important;
+}
+#bin.bin-waste {
+  background-color: #333333 !important;
+  color: #fff !important;
+  border-color: #333333 !important;
+}
+
 #jerrycan {
   position: absolute;
   bottom: 20px;
@@ -237,6 +248,66 @@ html, body {
   transition: background 0.2s, color 0.2s;
 }
 .gameover-btn:hover {
+  background: #0aabe1;
+  color: #ffc600;
+  border: 2px solid #ffc600;
+}
+
+/* Game Over Page */
+#gameover-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0aabe1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1000;
+}
+.gameover-img {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 220px;
+  width: 60vw;
+  height: auto;
+}
+.gameover-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px; /* More space between elements */
+}
+#gameover-page .gameover-msg {
+  color: #ffc600;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+#gameover-page .gameover-score {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+#gameover-page .gameover-btn {
+  font-size: 1.5rem;
+  padding: 10px 30px;
+  background: #ffc600;
+  color: #0aabe1;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s, color 0.2s;
+}
+#gameover-page .gameover-btn:hover {
   background: #0aabe1;
   color: #ffc600;
   border: 2px solid #ffc600;

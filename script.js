@@ -45,15 +45,13 @@ game.addEventListener('contextmenu', e => {
   // Update bin display and color
   bin.textContent = binMode.charAt(0).toUpperCase() + binMode.slice(1);
 
-  // Set bin color to match trash type
+  // Remove both classes first
+  bin.classList.remove('bin-recycle', 'bin-waste');
+  // Add the correct class for the bin
   if (binMode === 'recycle') {
-    bin.style.backgroundColor = '#ffc600'; // yellow for recycle
-    bin.style.color = '#222';
-    bin.style.borderColor = '#ffc600';
+    bin.classList.add('bin-recycle');
   } else if (binMode === 'waste') {
-    bin.style.backgroundColor = '#333333'; // dark for waste
-    bin.style.color = '#fff';
-    bin.style.borderColor = '#333333';
+    bin.classList.add('bin-waste');
   }
   // Jerrycan is always visible, no display toggling
 });
@@ -262,28 +260,18 @@ function showGameOver() {
   fallIntervals.forEach(clearInterval);
   fallIntervals = [];
 
-  // Clear game area
-  game.innerHTML = '';
+  // Hide the game area
+  game.style.display = 'none';
 
-  // Show game over message
-  const gameOverMsg = document.createElement('div');
-  gameOverMsg.className = 'gameover-msg';
-  gameOverMsg.textContent = 'Game Over!';
+  // Update the score on the game over page
+  const gameoverScore = document.getElementById('gameover-score');
+  if (gameoverScore) {
+    gameoverScore.textContent = `Your score: ${score}`;
+  }
 
-  const finalScore = document.createElement('div');
-  finalScore.className = 'gameover-score';
-  finalScore.textContent = `Your score: ${score}`;
-
-  const btn = document.createElement('button');
-  btn.className = 'gameover-btn';
-  btn.textContent = 'Restart/Work in Progress';
-  // Button is present and styled, but does nothing
-
-  const overlay = document.createElement('div');
-  overlay.id = 'gameover-overlay';
-  overlay.appendChild(gameOverMsg);
-  overlay.appendChild(finalScore);
-  overlay.appendChild(btn);
-
-  document.body.appendChild(overlay);
+  // Show the game over page
+  const gameoverPage = document.getElementById('gameover-page');
+  if (gameoverPage) {
+    gameoverPage.style.display = 'flex';
+  }
 }
