@@ -11,7 +11,7 @@ const jerrycan = document.getElementById('jerrycan');
 // Make sure your HTML uses <img id="jerrycan"> for this to work
 if (jerrycan)
 {
-  jerrycan.src = '/img/water-can-transparent.png'; // Path to your jerry can image
+  jerrycan.src = 'img/water-can-transparent.png'; // Path to your jerry can image
 }
 
 // Initialize game state
