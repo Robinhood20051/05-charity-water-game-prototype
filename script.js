@@ -9,7 +9,8 @@ const jerrycan = document.getElementById('jerrycan');
 
 // If jerrycan exists, set its image to water-can-transparent.png
 // Make sure your HTML uses <img id="jerrycan"> for this to work
-if (jerrycan) {
+if (jerrycan)
+{
   jerrycan.src = '/img/water-can-transparent.png'; // Path to your jerry can image
 }
 
@@ -24,9 +25,11 @@ let pausedItems = []; // Store paused items
 let lives = 3;
 
 // Show lives as jerry cans
-function updateLives() {
+function updateLives()
+{
   livesDisplay.innerHTML = '';
-  for (let i = 0; i < lives; i++) {
+  for (let i = 0; i < lives; i++)
+  {
     const life = document.createElement('div');
     life.className = 'life-jerrycan';
     livesDisplay.appendChild(life);
@@ -34,8 +37,20 @@ function updateLives() {
 }
 updateLives();
 
+// Helper function to update the score, never below zero
+function updateScore(change)
+{
+  score += change;
+  if (score < 0)
+  {
+    score = 0;
+  }
+  scoreDisplay.textContent = `Score: ${score}`;
+}
+
 // Toggle bin mode on right-click (cycle through recycle, waste)
-game.addEventListener('contextmenu', e => {
+game.addEventListener('contextmenu', e =>
+{
   e.preventDefault();
 
   // Cycle bin mode
@@ -48,38 +63,48 @@ game.addEventListener('contextmenu', e => {
   // Remove both classes first
   bin.classList.remove('bin-recycle', 'bin-waste');
   // Add the correct class for the bin
-  if (binMode === 'recycle') {
+  if (binMode === 'recycle')
+  {
     bin.classList.add('bin-recycle');
-  } else if (binMode === 'waste') {
+  }
+  else if (binMode === 'waste')
+  {
     bin.classList.add('bin-waste');
   }
   // Jerrycan is always visible, no display toggling
 });
 
 // Move bin and jerry can with mouse
-game.addEventListener('mousemove', e => {
+game.addEventListener('mousemove', e =>
+{
   const rect = game.getBoundingClientRect();
 
   // Position bin relative to mouse
   bin.style.left = `${e.clientX - rect.left - 40}px`;
   bin.style.top  = `${e.clientY - rect.top - 20}px`;
 
-  // Move jerry can horizontally with mouse, keep at bottom
+  // Move jerry can so it's even more to the right of the mouse cursor
+  // We add 45 pixels to shift it right for better alignment
   const jerrycanWidth = jerrycan.offsetWidth || 48;
-  jerrycan.style.left = `${Math.min(Math.max(e.clientX - rect.left - jerrycanWidth / 2, 0), game.clientWidth - jerrycanWidth)}px`;
+  jerrycan.style.left = `${e.clientX - rect.left - jerrycanWidth / 2 + 45}px`;
 });
 
 // Listen for Escape key to toggle pause/unpause
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    if (!paused) {
+document.addEventListener('keydown', e =>
+{
+  if (e.key === 'Escape')
+  {
+    if (!paused)
+    {
       // First press: pause game, stop all intervals, store items
       paused = true;
       fallIntervals.forEach(clearInterval);
       fallIntervals = [];
       // Store all falling items currently in the DOM
       pausedItems = Array.from(document.querySelectorAll('.falling'));
-    } else {
+    }
+    else
+    {
       // Second press: unpause game, respawn all paused items
       paused = false;
       pausedItems.forEach(item => resumeFalling(item));
@@ -89,13 +114,14 @@ document.addEventListener('keydown', e => {
 });
 
 // Resume falling for a paused item
-function resumeFalling(item) {
+function resumeFalling(item)
+{
   // Continue falling animation for the given item
-  const fall = setInterval(() => {
+  const fall = setInterval(() =>
+  {
     if (paused) return;
 
     const currentTop = parseInt(item.style.top);
-
     item.style.top = `${currentTop + 3}px`;
 
     const binRect  = bin.getBoundingClientRect();
@@ -122,11 +148,14 @@ function resumeFalling(item) {
     );
 
     // Only lose a life if garbage passes below the bottom of the jerrycan
-    if (currentTop > (jerrycan.offsetTop + jerrycan.offsetHeight)) {
-      if (item.dataset.type === 'trash-recycle' || item.dataset.type === 'trash-waste') {
+    if (currentTop > (jerrycan.offsetTop + jerrycan.offsetHeight))
+    {
+      if (item.dataset.type === 'trash-recycle' || item.dataset.type === 'trash-waste')
+      {
         lives--;
         updateLives();
-        if (lives <= 0) {
+        if (lives <= 0)
+        {
           showGameOver();
           return;
         }
@@ -137,34 +166,39 @@ function resumeFalling(item) {
       return;
     }
 
-    if (overlap) {
-      // Increase score if correct bin is used
+    if (overlap)
+    {
+      // Use helper to update score based on correct or wrong bin
       if (
         (item.dataset.type === 'trash-recycle' && binMode === 'recycle') ||
         (item.dataset.type === 'trash-waste'   && binMode === 'waste')
-      ) {
-        score++;
-        scoreDisplay.textContent = `Score: ${score}`;
+      )
+      {
+        updateScore(1); // Correct bin: add 1
+      }
+      else
+      {
+        updateScore(-1); // Wrong bin: subtract 1
       }
       item.remove();
       clearInterval(fall);
       fallIntervals = fallIntervals.filter(f => f !== fall);
-
-    } else if (waterCollected) {
+    }
+    else if (waterCollected)
+    {
       // Increase score for collecting water with jerry can
-      score++;
-      scoreDisplay.textContent = `Score: ${score}`;
+      updateScore(1);
       item.remove();
       clearInterval(fall);
       fallIntervals = fallIntervals.filter(f => f !== fall);
     }
   }, 16);
-
   fallIntervals.push(fall);
 }
 
 // Spawn a falling item at random position and type
-function spawnItem() {
+function spawnItem()
+{
   if (paused) return;
 
   const item = document.createElement('div');
@@ -177,17 +211,21 @@ function spawnItem() {
   game.appendChild(item);
 
   // Make the item fall and check for jerry can collision (for water)
-  const interval = setInterval(() => {
+  const interval = setInterval(() =>
+  {
     if (paused) return;
     let top = parseInt(item.style.top);
     item.style.top = (top + 3) + 'px';
 
     // Only lose a life if garbage passes below the bottom of the jerrycan
-    if (top > (jerrycan.offsetTop + jerrycan.offsetHeight)) {
-      if (type === 'trash-recycle' || type === 'trash-waste') {
+    if (top > (jerrycan.offsetTop + jerrycan.offsetHeight))
+    {
+      if (type === 'trash-recycle' || type === 'trash-waste')
+      {
         lives--;
         updateLives();
-        if (lives <= 0) {
+        if (lives <= 0)
+        {
           showGameOver();
           return;
         }
@@ -199,7 +237,8 @@ function spawnItem() {
     }
 
     // Only check collision for water
-    if (type === 'water') {
+    if (type === 'water')
+    {
       const itemRect = item.getBoundingClientRect();
       const jerrycanRect = jerrycan.getBoundingClientRect();
       const hitJerrycan = !(
@@ -208,11 +247,11 @@ function spawnItem() {
         itemRect.bottom < jerrycanRect.top ||
         itemRect.top > jerrycanRect.bottom
       );
-      if (hitJerrycan) {
-        // Prevent score update after game over
-        if (lives > 0) {
-          score++;
-          scoreDisplay.textContent = `Score: ${score}`;
+      if (hitJerrycan)
+      {
+        if (lives > 0)
+        {
+          updateScore(1);
         }
         item.remove();
         clearInterval(interval);
@@ -221,7 +260,8 @@ function spawnItem() {
       }
     }
 
-    if (top > game.clientHeight) {
+    if (top > game.clientHeight)
+    {
       item.remove();
       clearInterval(interval);
       fallIntervals = fallIntervals.filter(f => f !== interval);
@@ -229,19 +269,24 @@ function spawnItem() {
   }, 16);
   fallIntervals.push(interval);
 
-  // Only give points if the bin mode matches the trash type
-  item.addEventListener('pointerdown', e => {
+  // Only give or lose points if the bin mode matches or mismatches the trash type
+  item.addEventListener('pointerdown', e =>
+  {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     // Prevent score update after game over
-    if (
-      lives > 0 &&
-      (
+    if (lives > 0)
+    {
+      if (
         (type === 'trash-recycle' && binMode === 'recycle') ||
         (type === 'trash-waste' && binMode === 'waste')
       )
-    ) {
-      score++;
-      scoreDisplay.textContent = `Score: ${score}`;
+      {
+        updateScore(1);
+      }
+      else
+      {
+        updateScore(-1);
+      }
     }
     item.remove();
     clearInterval(interval);
@@ -253,7 +298,8 @@ function spawnItem() {
 let spawnInterval = setInterval(spawnItem, 1000);
 
 // Show game over screen and final score
-function showGameOver() {
+function showGameOver()
+{
   // Stop spawning new items
   clearInterval(spawnInterval);
   // Stop all falling item intervals
@@ -265,13 +311,15 @@ function showGameOver() {
 
   // Update the score on the game over page
   const gameoverScore = document.getElementById('gameover-score');
-  if (gameoverScore) {
+  if (gameoverScore)
+  {
     gameoverScore.textContent = `Your score: ${score}`;
   }
 
   // Show the game over page
   const gameoverPage = document.getElementById('gameover-page');
-  if (gameoverPage) {
+  if (gameoverPage)
+  {
     gameoverPage.style.display = 'flex';
   }
 }
