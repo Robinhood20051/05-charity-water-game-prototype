@@ -8,7 +8,7 @@ const livesDisplay = document.getElementById('lives');
 const jerrycan = document.getElementById('jerrycan');
 
 // If jerrycan exists, set its image to water-can-transparent.png
-// Make sure your HTML uses <img id="jerrycan"> for this to work
+// Make sure your HTML uses <img id="jerrycan"> and the path is correct
 if (jerrycan)
 {
   jerrycan.src = 'img/water-can-transparent.png'; // Path to your jerry can image
